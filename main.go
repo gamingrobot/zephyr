@@ -22,6 +22,7 @@ type Router struct {
 
 var router Router
 var logger *log.Logger
+var lastnum int
 
 func main() {
 	logger = log.New(os.Stdout, "[debug] ", log.Lshortfile|log.Lmicroseconds)
@@ -39,15 +40,19 @@ func startRouter(steamevents <-chan string) {
 	router.channels = make(map[uint64]chan string)
 	for event := range steamevents {
 		logger.Println("New Event")
-
 		router.mutex.Lock()
 		logger.Println("Number of channels", len(router.channels))
+		if len(router.channels) < lastnum {
+			time.Sleep(time.Duration(500) * time.Millisecond)
+			logger.Println("WOAH WHAT HAPPEND")
+		}
 		for k, channel := range router.channels {
 			logger.Println("Sending event to ", k)
 
 			logger.Println("Event Written", event)
 			channel <- event
 		}
+		lastnum = len(router.channels)
 		router.mutex.Unlock()
 		logger.Println("Event routed")
 
@@ -58,10 +63,10 @@ func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Param
 	logger.Println("Poll HTTP")
 	timeout, err := strconv.ParseInt(req.URL.Query().Get("timeout"), 10, 64)
 	if err != nil {
-		timeout = 60000 //default 60 seconds
+		timeout = 30000 //default 30 seconds
 	}
-	timeout -= 100 //remove 100 ms from the timout
-	tempchan := make(chan string, 100)
+	timeout -= 1000 //remove 1000 ms from the timout
+	tempchan := make(chan string, 1)
 	requestnum := addChannel(tempchan)
 
 	logger.Println("XHR ID is", requestnum)
@@ -115,8 +120,11 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			case error:
 				logger.Print(e)
 			}
+			logger.Println("Event Got", steamevent)
 			m, err := json.Marshal(steamevent)
-			if err == nil {
+			if err != nil {
+				logger.Println("FAILED TO ENCODE THIS THING")
+			} else {
 				steamevents <- string(m)
 			}
 		}
