@@ -39,7 +39,7 @@ func startRouter(steamevents <-chan string) {
 
 	router.channels = make(map[uint64]chan string)
 	for event := range steamevents {
-		logger.Println("New Event")
+		logger.Println("New Event in Router")
 		router.mutex.Lock()
 		logger.Println("Number of channels", len(router.channels))
 		if len(router.channels) < lastnum {
@@ -49,7 +49,7 @@ func startRouter(steamevents <-chan string) {
 		for k, channel := range router.channels {
 			logger.Println("Sending event to ", k)
 
-			logger.Println("Event Written", event)
+			logger.Println("Event Written to Martini", event)
 			channel <- event
 		}
 		lastnum = len(router.channels)
@@ -74,7 +74,7 @@ func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Param
 	//defer close(tempchan)
 	select {
 	case event := <-tempchan:
-		logger.Println("Event Sent", event)
+		logger.Println("Event Sent to Client", event)
 
 		logger.Println("I am ", requestnum, " and I got a event")
 		return 200, event
@@ -120,12 +120,13 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			case error:
 				logger.Print(e)
 			}
-			logger.Println("Event Got", steamevent)
+			logger.Println("Event Got from Steam", steamevent)
 			m, err := json.Marshal(steamevent)
 			if err != nil {
 				logger.Println("FAILED TO ENCODE THIS THING")
 			} else {
 				steamevents <- string(m)
+				logger.Println("Event Sent to Router", string(m))
 			}
 		}
 	}
