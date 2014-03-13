@@ -78,7 +78,7 @@ func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Param
 
 		logger.Println("I am ", requestnum, " and I got a event")
 		return 200, event
-	case <-time.After(time.Duration(30000) * time.Millisecond):
+	case <-time.After(time.Duration(timeout) * time.Millisecond):
 		return 400, ""
 	}
 }
