@@ -82,7 +82,7 @@ func startHttp(webevents chan<- string) {
 	m := martini.Classic()
 	logger.Println("Martini")
 
-	m.Get("/poll", PollHanler)
+	m.Get("/poll", PollHandler)
 	m.Get("/send/:message", func(params martini.Params) string {
 		webevents <- params["message"]
 		return `{"err": false}`
