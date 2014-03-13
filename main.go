@@ -6,8 +6,10 @@ import (
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
 	"log"
+	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -52,33 +54,35 @@ func startRouter(steamevents <-chan string) {
 	}
 }
 
+func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Params) (int, string) {
+	logger.Println("Poll HTTP")
+	timeout, err := strconv.ParseInt(req.URL.Query().Get("timeout"), 10, 64)
+	if err != nil {
+		timeout = 60000 //default 60 seconds
+	}
+	timeout -= 100 //remove 100 ms from the timout
+	tempchan := make(chan string, 100)
+	requestnum := addChannel(tempchan)
+
+	logger.Println("XHR ID is", requestnum)
+	defer removeChannel(requestnum)
+	//defer close(tempchan)
+	select {
+	case event := <-tempchan:
+		logger.Println("Event Sent", event)
+
+		logger.Println("I am ", requestnum, " and I got a event")
+		return 200, event
+	case <-time.After(time.Duration(30000) * time.Millisecond):
+		return 400, ""
+	}
+}
+
 func startHttp(webevents chan<- string) {
 	m := martini.Classic()
 	logger.Println("Martini")
 
-	m.Get("/poll", func(params martini.Params) (int, string) {
-		logger.Println("Poll HTTP")
-		timeout, err := strconv.Atoi(params["timeout"])
-		if err != nil {
-			timeout = 60000 //default 60 seconds
-		}
-		timeout -= 100 //remove 100 ms from the timout
-		tempchan := make(chan string, 100)
-		requestnum := addChannel(tempchan)
-
-		logger.Println("XHR ID is", requestnum)
-		defer removeChannel(requestnum)
-		//defer close(tempchan)
-		select {
-		case event := <-tempchan:
-			logger.Println("Event Sent", event)
-
-			logger.Println("I am ", requestnum, " and I got a event")
-			return 200, event
-		case <-time.After(time.Duration(30000) * time.Millisecond):
-			return 400, ""
-		}
-	})
+	m.Get("/poll", PollHandler)
 	m.Get("/send/:message", func(params martini.Params) string {
 		webevents <- params["message"]
 		return `{"err": false}`
