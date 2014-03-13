@@ -1,0 +1,13 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+var timeout = 30000; //10 seconds
+(function poll(){
+	console.log("Starting Poll")
+    $.ajax({ url: "http://192.168.0.3:3000/poll?timeout="+timeout+"&t="+new Date().getTime(), success: function(data){
+        //Update your dashboard gauge
+       console.log(data);
+
+    }, dataType: "json", complete: poll, timeout: timeout });
+})();
+</script>
+Hi
