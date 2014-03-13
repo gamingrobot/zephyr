@@ -54,7 +54,7 @@ func startRouter(steamevents <-chan string) {
 	}
 }
 
-func PollHanler(rw http.ResponseWriter, req *http.Request, params martini.Params) (int, string) {
+func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Params) (int, string) {
 	logger.Println("Poll HTTP")
 	timeout, err := strconv.ParseInt(req.URL.Query().Get("timeout"), 10, 64)
 	if err != nil {
@@ -82,6 +82,7 @@ func startHttp(webevents chan<- string) {
 	m := martini.Classic()
 	logger.Println("Martini")
 
+	m.Get("/poll", PollHanler)
 	m.Get("/send/:message", func(params martini.Params) string {
 		webevents <- params["message"]
 		return `{"err": false}`
