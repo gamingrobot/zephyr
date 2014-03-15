@@ -1,19 +1,25 @@
 <html>
 <head>
-	<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-	<script src='reconnecting-websocket.js'></script>
-	<script type="text/javascript">
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+    <script src='reconnecting-websocket.js'></script>
+    <script src='steam_language.js'></script>
+    <script type="text/javascript">
     var c=new ReconnectingWebSocket('ws://localhost:3000/ws');
     c.onopen = function(){
       c.onmessage = function(message){
-      	var steamevent = JSON.parse(message.data)
+        var steamevent = JSON.parse(message.data)
         console.log(steamevent);
         var newMessage = $('<li>').text(JSON.stringify(steamevent));
         $('#messages').append(newMessage);
       };
       $('form').submit(function(){
-        c.send($('#message').val());
-        $('#message').val('');
+        var msg = $('#message').val();
+        if(msg.length > 0){
+            var chatmsg = {"Name": "SendChatMessage", "Event": {"SteamId": "testid", "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
+            c.send(JSON.stringify(chatmsg));
+            $('#message').val('');
+            return false;
+        }
         return false;
       });
     }
@@ -22,8 +28,8 @@
 <body>
     <ul id="messages"></ul>
     <form>
-    	 <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
-    	<input type="submit" class="btn" value="Send" id="send">
+         <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
+        <input type="submit" class="btn" value="Send" id="send">
     </form>
 </body>
 </html>

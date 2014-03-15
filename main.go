@@ -5,6 +5,7 @@ import (
 	"github.com/codegangsta/martini"
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
+	. "github.com/gamingrobot/steamgo/steamid"
 	"github.com/gorilla/websocket"
 	"log"
 	"net"
@@ -12,8 +13,13 @@ import (
 	"os"
 	"reflect"
 	"runtime"
+	"strconv"
 	"sync"
 )
+
+type Test struct {
+	Testing string
+}
 
 type WebConn struct {
 	webSocket *websocket.Conn
@@ -46,17 +52,18 @@ func main() {
 }
 
 func startRouter(steamevents <-chan string) {
-	logger.Println("startRouter")
+	logger.Println("Router Started")
 	router.connections = make(map[uint64]WebConn)
 	for event := range steamevents {
 		router.mutex.RLock()
-		logger.Println("Number of connections", len(router.connections))
+		//logger.Println("Number of connections", len(router.connections))
 		for _, connection := range router.connections {
 			err := connection.webSocket.WriteMessage(websocket.TextMessage, []byte(event))
-			logger.Println("Write Error", err)
+			if err != nil {
+				logger.Println("Websocket write error:", err)
+			}
 		}
 		router.mutex.RUnlock()
-		logger.Println("Event routed")
 	}
 }
 
@@ -81,12 +88,12 @@ func WebSocketHandler(res http.ResponseWriter, req *http.Request, webevents chan
 		} else {
 			webevents <- string(message)
 		}
-		logger.Println("Looping read", clientId)
 	}
 }
 
 func startHttp(webevents chan<- string) {
 	m := martini.Classic()
+	logger.Println("Martini Started")
 	m.Get("/ws", func(res http.ResponseWriter, req *http.Request) {
 		WebSocketHandler(res, req, webevents)
 	})
@@ -94,6 +101,7 @@ func startHttp(webevents chan<- string) {
 }
 
 func startSteam(webevents <-chan string, steamevents chan<- string) {
+	logger.Println("Steam Started")
 	file, _ := os.Open("config.json")
 	decoder := json.NewDecoder(file)
 	login := steamgo.LogOnDetails{}
@@ -103,12 +111,30 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 	logger.Println("Connected to server:", server)
 	for {
 		select {
-		case webevent := <-webevents:
-			logger.Println("WebEvent", webevent)
+		case jsonevent := <-webevents:
+			logger.Println("WebEvent", jsonevent)
+			webevent := Event{}
+			err := json.Unmarshal([]byte(jsonevent), &webevent)
+			if err != nil {
+				logger.Println("Failed to decode event", err)
+			} else {
+				e := webevent.Event
+				event := e.(map[string]interface{})
+				switch webevent.Name {
+				case "SendChatMessage":
+					logger.Printf("%+v\n", event)
+					steamid, _ := strconv.ParseUint(event["SteamId"].(string), 10, 64)
+					chatentry := int32(event["ChatEntryType"].(float64))
+					client.Social.SendChatMessage(
+						SteamId(steamid),
+						EChatEntryType(chatentry),
+						event["Message"].(string))
+				}
+			}
 		case steamevent := <-client.Events():
 			switch e := steamevent.(type) {
 			case steamgo.ConnectedEvent:
-				client.Auth.LogOn(&login)
+				client.Auth.LogOn(login)
 			case steamgo.LoggedOnEvent:
 				client.Social.SetPersonaState(EPersonaState_Online)
 			case steamgo.FatalError:
@@ -118,14 +144,14 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			case error:
 				logger.Print(e)
 			}
-			//logger.Println("Event Got from Steam", steamevent)
-			outevent := Event{Name: reflect.TypeOf(steamevent).Name(), Event: steamevent}
-			m, err := json.Marshal(outevent)
+			outevent, err := json.Marshal(Event{
+				Name:  reflect.TypeOf(steamevent).Name(),
+				Event: steamevent,
+			})
 			if err != nil {
-				logger.Println("Failed to encode event")
+				logger.Println("Failed to encode event", err)
 			} else {
-				steamevents <- string(m)
-				logger.Println("Event Sent to Router", string(m))
+				steamevents <- string(outevent)
 			}
 		}
 	}
