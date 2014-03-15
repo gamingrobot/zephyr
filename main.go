@@ -38,7 +38,7 @@ var lastnum int
 func main() {
 	logger = log.New(os.Stdout, "[debug] ", log.Lshortfile|log.Lmicroseconds)
 	runtime.GOMAXPROCS(4)
-	webevents := make(chan string)
+	webevents := make(chan string, 20)
 	steamevents := make(chan string, 100)
 	go startRouter(steamevents)
 	go startHttp(webevents)
