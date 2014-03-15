@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"reflect"
 	"runtime"
 	"sync"
 )
@@ -23,6 +24,11 @@ type Router struct {
 	mutex        sync.RWMutex
 	requestCount uint64
 	connections  map[uint64]WebConn
+}
+
+type Event struct {
+	Name  string
+	Event interface{}
 }
 
 var router Router
@@ -64,7 +70,7 @@ func WebSocketHandler(res http.ResponseWriter, req *http.Request, webevents chan
 		return
 	}
 	client := ws.RemoteAddr()
-	sockCli := WebConn{ws, client}
+	sockCli := WebConn{webSocket: ws, clientIp: client}
 	clientId := addClient(sockCli)
 
 	for {
@@ -101,9 +107,9 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			logger.Println("WebEvent", webevent)
 		case steamevent := <-client.Events():
 			switch e := steamevent.(type) {
-			case *steamgo.ConnectedEvent:
+			case steamgo.ConnectedEvent:
 				client.Auth.LogOn(&login)
-			case *steamgo.LoggedOnEvent:
+			case steamgo.LoggedOnEvent:
 				client.Social.SetPersonaState(EPersonaState_Online)
 			case steamgo.FatalError:
 				client.Connect() // please do some real error handling here
@@ -112,13 +118,14 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			case error:
 				logger.Print(e)
 			}
-			logger.Println("Event Got from Steam", steamevent)
-			m, err := json.Marshal(steamevent)
+			//logger.Println("Event Got from Steam", steamevent)
+			outevent := Event{Name: reflect.TypeOf(steamevent).Name(), Event: steamevent}
+			m, err := json.Marshal(outevent)
 			if err != nil {
 				logger.Println("Failed to encode event")
 			} else {
 				steamevents <- string(m)
-				//logger.Println("Event Sent to Router", string(m))
+				logger.Println("Event Sent to Router", string(m))
 			}
 		}
 	}
