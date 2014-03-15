@@ -1,13 +1,29 @@
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script type="text/javascript">
-var timeout = 30000; //10 seconds
-(function poll(){
-	console.log("Starting Poll")
-    $.ajax({ url: "http://192.168.0.3:3000/poll?timeout="+timeout+"&t="+new Date().getTime(), success: function(data){
-        //Update your dashboard gauge
-       console.log(data);
-
-    }, dataType: "json", complete: poll, timeout: timeout });
-})();
-</script>
-Hi
+<html>
+<head>
+	<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+	<script src='reconnecting-websocket.js'></script>
+	<script type="text/javascript">
+    var c=new ReconnectingWebSocket('ws://localhost:3000/ws');
+    c.onopen = function(){
+      c.onmessage = function(message){
+      	var steamevent = JSON.parse(message.data)
+        console.log(steamevent);
+        var newMessage = $('<li>').text(JSON.stringify(steamevent));
+        $('#messages').append(newMessage);
+      };
+      $('form').submit(function(){
+        c.send($('#message').val());
+        $('#message').val('');
+        return false;
+      });
+    }
+    </script>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form>
+    	 <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
+    	<input type="submit" class="btn" value="Send" id="send">
+    </form>
+</body>
+</html>

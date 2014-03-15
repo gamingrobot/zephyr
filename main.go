@@ -5,19 +5,24 @@ import (
 	"github.com/codegangsta/martini"
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
+	"github.com/gorilla/websocket"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"runtime"
-	"strconv"
 	"sync"
-	"time"
 )
+
+type WebConn struct {
+	webSocket *websocket.Conn
+	clientIp  net.Addr
+}
 
 type Router struct {
 	mutex        sync.RWMutex
-	requestcount uint64
-	channels     map[uint64]chan string
+	requestCount uint64
+	connections  map[uint64]WebConn
 }
 
 var router Router
@@ -36,61 +41,48 @@ func main() {
 
 func startRouter(steamevents <-chan string) {
 	logger.Println("startRouter")
-
-	router.channels = make(map[uint64]chan string)
+	router.connections = make(map[uint64]WebConn)
 	for event := range steamevents {
-		logger.Println("New Event in Router")
-		router.mutex.Lock()
-		logger.Println("Number of channels", len(router.channels))
-		if len(router.channels) < lastnum {
-			time.Sleep(time.Duration(500) * time.Millisecond)
-			logger.Println("WOAH WHAT HAPPEND")
+		router.mutex.RLock()
+		logger.Println("Number of connections", len(router.connections))
+		for _, connection := range router.connections {
+			err := connection.webSocket.WriteMessage(websocket.TextMessage, []byte(event))
+			logger.Println("Write Error", err)
 		}
-		for k, channel := range router.channels {
-			logger.Println("Sending event to ", k)
-
-			logger.Println("Event Written to Martini", event)
-			channel <- event
-		}
-		lastnum = len(router.channels)
-		router.mutex.Unlock()
+		router.mutex.RUnlock()
 		logger.Println("Event routed")
-
 	}
 }
 
-func PollHandler(rw http.ResponseWriter, req *http.Request, params martini.Params) (int, string) {
-	logger.Println("Poll HTTP")
-	timeout, err := strconv.ParseInt(req.URL.Query().Get("timeout"), 10, 64)
-	if err != nil {
-		timeout = 30000 //default 30 seconds
+func WebSocketHandler(res http.ResponseWriter, req *http.Request, webevents chan<- string) {
+	ws, err := websocket.Upgrade(res, req, nil, 1024, 1024)
+	if _, ok := err.(websocket.HandshakeError); ok {
+		http.Error(res, "Not a websocket handshake", 400)
+		return
+	} else if err != nil {
+		logger.Println(err)
+		return
 	}
-	timeout -= 1000 //remove 1000 ms from the timout
-	tempchan := make(chan string, 1)
-	requestnum := addChannel(tempchan)
+	client := ws.RemoteAddr()
+	sockCli := WebConn{ws, client}
+	clientId := addClient(sockCli)
 
-	logger.Println("XHR ID is", requestnum)
-	defer removeChannel(requestnum)
-	//defer close(tempchan)
-	select {
-	case event := <-tempchan:
-		logger.Println("Event Sent to Client", event)
-
-		logger.Println("I am ", requestnum, " and I got a event")
-		return 200, event
-	case <-time.After(time.Duration(timeout) * time.Millisecond):
-		return 400, ""
+	for {
+		_, message, err := ws.ReadMessage() //blocking
+		if err != nil {
+			removeClient(clientId)
+			return
+		} else {
+			webevents <- string(message)
+		}
+		logger.Println("Looping read", clientId)
 	}
 }
 
 func startHttp(webevents chan<- string) {
 	m := martini.Classic()
-	logger.Println("Martini")
-
-	m.Get("/poll", PollHandler)
-	m.Get("/send/:message", func(params martini.Params) string {
-		webevents <- params["message"]
-		return `{"err": false}`
+	m.Get("/ws", func(res http.ResponseWriter, req *http.Request) {
+		WebSocketHandler(res, req, webevents)
 	})
 	m.Run()
 }
@@ -123,27 +115,26 @@ func startSteam(webevents <-chan string, steamevents chan<- string) {
 			logger.Println("Event Got from Steam", steamevent)
 			m, err := json.Marshal(steamevent)
 			if err != nil {
-				logger.Println("FAILED TO ENCODE THIS THING")
+				logger.Println("Failed to encode event")
 			} else {
 				steamevents <- string(m)
-				logger.Println("Event Sent to Router", string(m))
+				//logger.Println("Event Sent to Router", string(m))
 			}
 		}
 	}
 }
 
-func addChannel(newchan chan string) uint64 {
+func addClient(connection WebConn) uint64 {
 	router.mutex.Lock()
 	defer router.mutex.Unlock()
-	router.requestcount += 1
-	router.channels[router.requestcount] = newchan
-	return router.requestcount
+	router.requestCount += 1
+	router.connections[router.requestCount] = connection
+	return router.requestCount
 }
 
-func removeChannel(id uint64) {
-	logger.Println("Removing Chan ", id)
-
+func removeClient(id uint64) {
+	logger.Println("Removing Client ", id)
 	router.mutex.Lock()
 	defer router.mutex.Unlock()
-	delete(router.channels, id)
+	delete(router.connections, id)
 }
