@@ -8,12 +8,6 @@ import (
 
 type Event string
 
-type SendMessageEvent struct {
-	SteamId       SteamId
-	ChatEntryType EChatEntryType
-	Message       string
-}
-
 type WebEvent struct {
 	Event Event
 	Body  json.RawMessage
@@ -22,4 +16,10 @@ type WebEvent struct {
 type SteamEvent struct {
 	Event Event
 	Body  interface{}
+}
+
+type SendMessageEvent struct {
+	SteamId       SteamId
+	ChatEntryType EChatEntryType
+	Message       string
 }
