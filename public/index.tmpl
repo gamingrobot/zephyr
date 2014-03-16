@@ -28,6 +28,9 @@
     </script>
 </head>
 <body>
+{{range .Friends}} 
+    <h3>{{.SteamId}}, {{.Name}}</h3>
+{{end}}
     <ul id="messages"></ul>
     <form>
          <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
