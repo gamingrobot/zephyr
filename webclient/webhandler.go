@@ -3,6 +3,7 @@ package webclient
 import (
 	"fmt"
 	"github.com/codegangsta/martini"
+	. "github.com/gamingrobot/steamgo/steamid"
 	. "github.com/gamingrobot/zephyr/events"
 	"github.com/gorilla/websocket"
 	"net"
@@ -104,5 +105,7 @@ func (w *WebHandler) handleWebEvent(event *WebEvent) {
 func (w *WebHandler) handleSendMessage(event *WebEvent) {
 	body := new(SendMessageEvent)
 	event.ReadEvent(body)
+	steam := w.client.SteamHandler.steam
+	steam.Social.SendMessage(NewId(body.SteamId), body.ChatEntryType, body.Message)
 	fmt.Printf("%+v\n", body)
 }

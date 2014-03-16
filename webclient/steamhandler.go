@@ -8,36 +8,38 @@ import (
 
 type SteamHandler struct {
 	client *WebClient
+	steam  *steamgo.Client
 }
 
 func newSteamHandler(client *WebClient) *SteamHandler {
+	steam := steamgo.NewClient()
+	server := steam.ConnectNorthAmerica()
+	fmt.Println("Connected to server:", server)
 	return &SteamHandler{
 		client: client,
+		steam:  steam,
 	}
 }
 
 func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
-	client := steamgo.NewClient()
-	server := client.ConnectNorthAmerica()
-	fmt.Println("Connected to server:", server)
-	for event := range client.Events() {
+	for event := range s.steam.Events() {
 		switch e := event.(type) {
 		case steamgo.ConnectedEvent:
-			client.Auth.LogOn(login)
+			s.steam.Auth.LogOn(login)
 		case steamgo.FatalError:
-			client.Connect() // please do some real error handling here
+			s.steam.Connect() // please do some real error handling here
 			fmt.Print("FatalError", e)
 		case error:
 			fmt.Println(e)
 		default:
-			s.handleSteamEvent(event, client)
+			s.handleSteamEvent(event)
 		}
 	}
 }
 
-func (s *SteamHandler) handleSteamEvent(event interface{}, client *steamgo.Client) {
+func (s *SteamHandler) handleSteamEvent(event interface{}) {
 	switch event.(type) {
 	case steamgo.LoggedOnEvent:
-		client.Social.SetPersonaState(EPersonaState_Online)
+		s.steam.Social.SetPersonaState(EPersonaState_Online)
 	}
 }

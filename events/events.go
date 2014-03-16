@@ -3,7 +3,6 @@ package events
 import (
 	"encoding/json"
 	. "github.com/gamingrobot/steamgo/internal"
-	. "github.com/gamingrobot/steamgo/steamid"
 )
 
 type Event string
@@ -19,7 +18,7 @@ type SteamEvent struct {
 }
 
 type SendMessageEvent struct {
-	SteamId       SteamId
+	SteamId       string
 	ChatEntryType EChatEntryType
 	Message       string
 }

@@ -15,7 +15,9 @@
       $('form').submit(function(){
         var msg = $('#message').val();
         if(msg.length > 0){
-            var chatmsg = {"Event": "SendMessageEvent", "Body": {"SteamId": 76561198001096012, "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
+            var chatmsg = {"Event": "SendMessageEvent", "Body": {"SteamId": "76561198001096012", "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
+            console.log(chatmsg)
+            console.log(JSON.stringify(chatmsg))
             c.send(JSON.stringify(chatmsg));
             $('#message').val('');
             return false;
