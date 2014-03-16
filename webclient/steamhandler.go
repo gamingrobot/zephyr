@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
+	. "github.com/gamingrobot/zephyr/events"
 )
 
 type SteamHandler struct {
@@ -33,6 +34,12 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 			fmt.Println(e)
 		default:
 			s.handleSteamEvent(event)
+		}
+		steamevent, err := EncodeEvent(event)
+		if err != nil {
+			fmt.Println("Failed to encode", err)
+		} else {
+			s.client.steamEvents <- steamevent
 		}
 	}
 }
