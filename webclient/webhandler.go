@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
-	"github.com/gamingrobot/steamgo/socialcache"
 	. "github.com/gamingrobot/zephyr/events"
 	"github.com/gorilla/websocket"
 	"net"
@@ -41,7 +40,7 @@ func (w *WebHandler) httpLoop() {
 		w.webSocketHandler(res, req)
 	})
 	m.Get("/", func(r render.Render) {
-		w.indexHandler(r)
+		w.templateIndex(r)
 	})
 	go m.Run()
 	for event := range w.client.webEvents {
@@ -52,19 +51,6 @@ func (w *WebHandler) httpLoop() {
 			w.handleWebEvent(webevent)
 		}
 	}
-}
-
-type IndexData struct {
-	Friends []socialcache.Friend
-}
-
-func (w *WebHandler) indexHandler(r render.Render) {
-	index := IndexData{}
-	steam := w.client.SteamHandler.steam
-	for _, friend := range steam.Social.Friends.GetCopy() {
-		index.Friends = append(index.Friends, friend)
-	}
-	r.HTML(200, "index", index)
 }
 
 func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request) {
