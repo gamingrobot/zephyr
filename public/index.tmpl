@@ -29,7 +29,7 @@
 </head>
 <body>
 {{range .Friends}} 
-    <img src="http://media.steampowered.com/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" /><a href="http://steamcommunity.com/profiles/{{.SteamId}}">{{.Name}} </a>{{.State}},<br/>
+    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="http://media.steampowered.com/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}},<br/>
 {{end}}
     <ul id="messages"></ul>
     <form>
