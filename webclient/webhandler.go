@@ -6,6 +6,7 @@ import (
 	"github.com/codegangsta/martini-contrib/render"
 	. "github.com/gamingrobot/zephyr/events"
 	"github.com/gorilla/websocket"
+	"log"
 	"net"
 	"net/http"
 	"sync"
@@ -42,7 +43,8 @@ func (w *WebHandler) httpLoop() {
 	m.Get("/", func(r render.Render) {
 		w.templateIndex(r)
 	})
-	go m.Run()
+	//go m.Run()
+	go log.Fatal(http.ListenAndServe("localhost:3000", m))
 	for event := range w.client.webEvents {
 		webevent, err := NewWebEvent(event)
 		if err != nil {
