@@ -19,7 +19,7 @@
       $('form').submit(function(){
         var msg = $('#message').val();
         if(msg.length > 0){
-            var chatmsg = {"Event": "SendMessageEvent", "Body": {"SteamId": "76561198001096012", "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
+            var chatmsg = {"Event": "SendMessageEvent", "Body": {"SteamId": $('#steamid').val(), "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
             console.log(chatmsg)
             console.log(JSON.stringify(chatmsg))
             c.send(JSON.stringify(chatmsg));
@@ -33,12 +33,13 @@
 </head>
 <body>
 {{range .Friends}} 
-    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}},<br/>
+    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}<br/>
 {{end}}
-    <ul id="messages"></ul>
     <form>
+         <input type="text" id="steamid" placeholder="enter steamid ...">
          <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
         <input type="submit" class="btn" value="Send" id="send">
     </form>
+    <ul id="messages"></ul>
 </body>
 </html>

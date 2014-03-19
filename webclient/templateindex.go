@@ -1,6 +1,7 @@
 package webclient
 
 import (
+	"fmt"
 	"github.com/codegangsta/martini-contrib/render"
 	. "github.com/gamingrobot/steamgo/internal"
 )
@@ -25,6 +26,7 @@ func (w *WebHandler) templateIndex(r render.Render) {
 		if len(avatar) == 0 || avatar == "0000000000000000000000000000000000000000" {
 			avatar = "fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb" //Default ? avatar
 		}
+		fmt.Println(f.SteamId.ToUint64(), f.Name)
 		friend := Friend{
 			SteamId:    f.SteamId.ToUint64(),
 			Name:       f.Name,
