@@ -44,7 +44,7 @@ func (w *WebHandler) httpLoop() {
 		w.templateIndex(r)
 	})
 	//go m.Run()
-	go log.Fatal(http.ListenAndServe("localhost:3000", m))
+	go w.runServer(m)
 	for event := range w.client.webEvents {
 		webevent, err := NewWebEvent(event)
 		if err != nil {
@@ -53,6 +53,10 @@ func (w *WebHandler) httpLoop() {
 			w.handleWebEvent(webevent)
 		}
 	}
+}
+
+func (w *WebHandler) runServer(m *martini.ClassicMartini) {
+	log.Fatal(http.ListenAndServe("localhost:3000", m))
 }
 
 func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request) {
@@ -65,6 +69,7 @@ func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request
 		return
 	}
 	client := ws.RemoteAddr()
+	fmt.Println("Got Websocket", client)
 	clientId := w.addClient(WebConnection{webSocket: ws, clientIp: client})
 	for {
 		_, message, err := ws.ReadMessage() //blocking
@@ -72,6 +77,7 @@ func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request
 			w.removeClient(clientId)
 			return
 		} else {
+			fmt.Println("Got Event", string(message))
 			w.client.webEvents <- string(message)
 		}
 	}
@@ -103,6 +109,7 @@ func (w *WebHandler) DispatchEvent(event string) {
 }
 
 func (w *WebHandler) handleWebEvent(event *WebEvent) {
+	fmt.Println(event.Event)
 	switch event.Event {
 	case "SendMessageEvent":
 		w.handleSendMessage(event)
