@@ -48,7 +48,7 @@ func (w *WebHandler) httpLoop() {
 	for event := range w.client.webEvents {
 		webevent, err := NewWebEvent(event)
 		if err != nil {
-			fmt.Println("Failed to decode", err)
+			log.Println("Failed to decode", err)
 		} else {
 			w.handleWebEvent(webevent)
 		}
@@ -67,7 +67,7 @@ func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request
 		http.Error(res, "Not a websocket handshake", 400)
 		return
 	} else if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	client := ws.RemoteAddr()
@@ -104,7 +104,7 @@ func (w *WebHandler) DispatchEvent(event string) {
 	for _, connection := range w.connections {
 		err := connection.webSocket.WriteMessage(websocket.TextMessage, []byte(event))
 		if err != nil {
-			fmt.Println("Websocket write error", err)
+			log.Println("Websocket write error", err)
 		}
 	}
 	w.mutex.RUnlock()
