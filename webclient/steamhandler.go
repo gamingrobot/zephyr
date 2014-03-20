@@ -29,7 +29,11 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 			log.Println("Connected to steam")
 			s.steam.Auth.LogOn(login)
 		case steamgo.LoggedOnEvent:
-			log.Println("Successfully logged in as", login.Username)
+			log.Println("Logged on steam as", login.Username)
+		case steamgo.LoggedOffEvent:
+			log.Println("Logged off steam")
+		case steamgo.DisconnectedEvent:
+			log.Println("Disconnected to steam")
 		case steamgo.MachineAuthUpdateEvent:
 		case steamgo.LoginKeyEvent:
 		case steamgo.FatalError:
