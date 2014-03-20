@@ -34,6 +34,7 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 			s.steam.Social.RequestFriendInfo(s.steam.SteamId(), EClientPersonaStateFlag_DefaultInfoRequest)
 		case steamgo.LoggedOffEvent:
 			log.Println("Logged off steam")
+			s.steam.Auth.LogOn(login)
 		case steamgo.DisconnectedEvent:
 			log.Println("Disconnected to steam")
 		case steamgo.MachineAuthUpdateEvent:
