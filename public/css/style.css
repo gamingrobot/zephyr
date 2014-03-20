@@ -4,3 +4,20 @@
     padding: 5px 0;
     float: right;
 }
+
+.nav-tabs .profile {
+    padding-top: 1px;
+    float: right;
+}
+
+.nav-tabs .profile img {
+    padding-right: 5px;
+}
+
+.nav-tabs .profile a {
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}

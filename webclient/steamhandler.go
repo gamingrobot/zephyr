@@ -31,6 +31,7 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 		case steamgo.LoggedOnEvent:
 			log.Println("Logged on steam as", login.Username)
 			s.steam.Social.SetPersonaState(EPersonaState_Online)
+			s.steam.Social.RequestFriendInfo(s.steam.SteamId(), EClientPersonaStateFlag_DefaultInfoRequest)
 		case steamgo.LoggedOffEvent:
 			log.Println("Logged off steam")
 		case steamgo.DisconnectedEvent:
