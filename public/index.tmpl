@@ -21,20 +21,22 @@
     </div>
     <div class="tab-content">
         <div class="tab-pane active" id="friends">
-            <div id="friends">
-                {{range .Friends}}
-                <div id="{{.SteamId}}" >
-                    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}
+            <div class="row">
+                <div class="col-md-4" id="friends">
+                    {{range .Friends}}
+                    <div id="{{.SteamId}}" >
+                        <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}
+                    </div>
+                    {{end}}
                 </div>
-                {{end}}
-            </div>
-            <div id="chat">
-                <ol id="messages"></ol>
-                <form>
-                    <input type="text" id="steamid" placeholder="enter steamid ...">
-                    <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
-                    <input type="submit" class="btn" value="Send" id="send">
-                </form>
+                <div class="col-md-8" id="chat">
+                    <ol id="messages"></ol>
+                    <form>
+                        <input type="text" id="steamid" placeholder="enter steamid ...">
+                        <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
+                        <input type="submit" class="btn" value="Send" id="send">
+                    </form>
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="Group1">Test</div>
