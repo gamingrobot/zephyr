@@ -30,6 +30,7 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 			s.steam.Auth.LogOn(login)
 		case steamgo.LoggedOnEvent:
 			log.Println("Logged on steam as", login.Username)
+			s.steam.Social.SetPersonaState(EPersonaState_Online)
 		case steamgo.LoggedOffEvent:
 			log.Println("Logged off steam")
 		case steamgo.DisconnectedEvent:
@@ -49,8 +50,6 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 
 func (s *SteamHandler) handleSteamEvent(event interface{}) {
 	switch event.(type) { //Events that should be passed to web
-	case steamgo.LoggedOnEvent:
-		s.steam.Social.SetPersonaState(EPersonaState_Online)
 	}
 	steamevent, err := EncodeEvent(event)
 	if err != nil {

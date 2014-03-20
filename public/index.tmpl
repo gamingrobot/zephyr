@@ -1,45 +1,45 @@
 <html>
 <head>
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
-    <script src='reconnecting-websocket.js'></script>
-    <script src='steam_language.js'></script>
-    <script type="text/javascript">
-    var server = "wss://zephyr.gamingrobot.net/ws"
-    if (window.location.search === '?debug') {
-        server = 'ws://localhost:3000/ws';
-    }
-    var c=new ReconnectingWebSocket(server);
-    c.onopen = function(){
-      c.onmessage = function(message){
-        var steamevent = JSON.parse(message.data)
-        console.log(steamevent);
-        var newMessage = $('<li>').text(JSON.stringify(steamevent));
-        $('#messages').append(newMessage);
-      };
-      $('form').submit(function(){
-        var msg = $('#message').val();
-        if(msg.length > 0){
-            var chatmsg = {"Event": "SendMessageEvent", "Body": {"SteamId": $('#steamid').val(), "ChatEntryType": EChatEntryType.ChatMsg, "Message": msg}}
-            console.log(chatmsg)
-            console.log(JSON.stringify(chatmsg))
-            c.send(JSON.stringify(chatmsg));
-            $('#message').val('');
-            return false;
-        }
-        return false;
-      });
-    }
-    </script>
+    <script src='js/reconnecting-websocket.js'></script>
+    <script src='js/steam_language.js'></script>
+    <script src='js/chat.js'></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
 </head>
 <body>
-{{range .Friends}} 
-    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}<br/>
-{{end}}
-    <form>
-         <input type="text" id="steamid" placeholder="enter steamid ...">
-         <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
-        <input type="submit" class="btn" value="Send" id="send">
-    </form>
-    <ul id="messages"></ul>
+<div class="container-full">
+    <div class="navbar-default">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#friends" data-toggle="tab">Friends</a></li>
+            <li><a href="#Group1" data-toggle="tab">Group1<button class="close" type="button">×</button></a></li>
+            <li><a href="#Group2" data-toggle="tab">Group2<button class="close" type="button">×</button></a></li>
+        </ul>
+        <div id="profile"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg"/>Username</div>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane active" id="friends">
+            <div id="friends">
+                {{range .Friends}}
+                <div id="{{.SteamId}}" >
+                    <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}
+                </div>
+                {{end}}
+            </div>
+            <div id="chat">
+                <ol id="messages"></ol>
+                <form>
+                    <input type="text" id="steamid" placeholder="enter steamid ...">
+                    <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
+                    <input type="submit" class="btn" value="Send" id="send">
+                </form>
+            </div>
+        </div>
+        <div class="tab-pane" id="Group1">Test</div>
+        <div class="tab-pane" id="Group2">Test2</div>
+    </div>
+</div>
 </body>
 </html>
