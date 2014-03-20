@@ -1,10 +1,10 @@
 package webclient
 
 import (
-	"fmt"
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
 	. "github.com/gamingrobot/zephyr/events"
+	"log"
 )
 
 type SteamHandler struct {
@@ -15,7 +15,7 @@ type SteamHandler struct {
 func newSteamHandler(client *WebClient) *SteamHandler {
 	steam := steamgo.NewClient()
 	server := steam.ConnectNorthAmerica()
-	fmt.Println("Connected to server:", server)
+	log.Println("Connecting to steam server:", server)
 	return &SteamHandler{
 		client: client,
 		steam:  steam,
@@ -26,13 +26,17 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 	for event := range s.steam.Events() {
 		switch e := event.(type) { //Events that should *not* be passed to web
 		case steamgo.ConnectedEvent:
+			log.Println("Connected to steam")
 			s.steam.Auth.LogOn(login)
+		case steamgo.LoggedOnEvent:
+			log.Println("Successfully logged in as", login.Username)
+		case steamgo.MachineAuthUpdateEvent:
 		case steamgo.LoginKeyEvent:
 		case steamgo.FatalError:
 			s.steam.Connect() // please do some real error handling here
-			fmt.Print("FatalError", e)
+			log.Print("FatalError", e)
 		case error:
-			fmt.Println(e)
+			log.Println(e)
 		default:
 			s.handleSteamEvent(event)
 		}
@@ -46,7 +50,7 @@ func (s *SteamHandler) handleSteamEvent(event interface{}) {
 	}
 	steamevent, err := EncodeEvent(event)
 	if err != nil {
-		fmt.Println("Failed to encode", err)
+		log.Println("Failed to encode", err)
 	} else {
 		s.client.steamEvents <- steamevent
 	}

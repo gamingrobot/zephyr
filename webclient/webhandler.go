@@ -56,7 +56,9 @@ func (w *WebHandler) httpLoop() {
 }
 
 func (w *WebHandler) runServer(m *martini.ClassicMartini) {
-	log.Fatal(http.ListenAndServe("localhost:3000", m))
+	address := "localhost:3000"
+	log.Println("Martini started on", address)
+	log.Fatal(http.ListenAndServe(address, m))
 }
 
 func (w *WebHandler) webSocketHandler(res http.ResponseWriter, req *http.Request) {
