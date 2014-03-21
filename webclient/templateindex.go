@@ -7,7 +7,7 @@ import (
 )
 
 type indexData struct {
-	User User
+	User    User
 	Friends []Friend
 }
 
@@ -28,16 +28,16 @@ type Friend struct {
 
 func (w *WebHandler) templateIndex(r render.Render) {
 	index := indexData{}
-	steam := w.client.SteamHandler.steam
+	steam := w.client.steamClient
 	uavatar := steam.Social.GetAvatar()
 	if !ValidAvatar(uavatar) {
 		uavatar = DefaultAvatar
 	}
 	index.User = User{
-		SteamId: uint64(steam.SteamId()),
-		Name: steam.Social.GetPersonaName(),
+		SteamId:    uint64(steam.SteamId()),
+		Name:       steam.Social.GetPersonaName(),
 		AvatarRoot: uavatar[0:2],
-		Avatar: uavatar,
+		Avatar:     uavatar,
 	}
 	for _, f := range steam.Social.Friends.GetCopy() {
 		avatar := f.Avatar

@@ -121,7 +121,6 @@ func (w *WebHandler) handleWebEvent(event *WebEvent) {
 func (w *WebHandler) handleSendMessage(event *WebEvent) {
 	body := new(SendMessageEvent)
 	event.ReadEvent(body)
-	steam := w.client.SteamHandler.steam
-	steam.Social.SendMessage(body.SteamId, body.ChatEntryType, body.Message)
+	w.client.steamClient.Social.SendMessage(body.SteamId, body.ChatEntryType, body.Message)
 	fmt.Printf("%+v\n", body)
 }

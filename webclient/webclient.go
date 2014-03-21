@@ -7,6 +7,7 @@ import (
 type WebClient struct {
 	WebHandler   *WebHandler
 	SteamHandler *SteamHandler
+	steamClient  *steamgo.Client
 
 	webEvents   chan string
 	steamEvents chan string
@@ -19,6 +20,7 @@ func NewWebClient() *WebClient {
 	}
 	client.WebHandler = newWebHandler(client)
 	client.SteamHandler = newSteamHandler(client)
+	client.steamClient = client.SteamHandler.steam
 	return client
 }
 
