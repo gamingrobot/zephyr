@@ -1,36 +1,51 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>Zephyr</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-        <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
-        <script src='js/reconnecting-websocket.js'></script>
-        <script src='js/steam_language.js'></script>
-        <script src='js/chat.js'></script>
-        <link rel="stylesheet" href="css/zephyr.css"/>
-    </head>
-    <body>
-        <div class="container">
-            <header id="header" class="fixed-bar">
-            <ol id="tabs">
-                <li id="tab-friends" data-name="friends" class="selected">
-                  <span class="tab-name">Friends</span>
-                  <span class="tab-close" style="display: none;">✕</span>
-                </li>
+<head>
+    <meta charset="utf-8"/>
+    <title>Zephyr</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
+    <script src='js/reconnecting-websocket.js'></script>
+    <script src='js/steam_language.js'></script>
+    <script src='js/chat.js'></script>
+    <link rel="stylesheet" href="css/zephyr.css"/>
+</head>
+<body>
+<div class="container">
+    <header id="header" class="fixed-bar">
+    <ol id="tabs">
+        <li id="tab-friends" data-name="friends" class="selected">
+          <span class="tab-name">Friends</span>
+          <span class="tab-close" style="display: none;">✕</span>
+        </li>
+    </ol>
+    </header>
+    <div id="content-friends" class="tab-content">
+        <ol id="friends-list" class="list">
+            Friends
+            {{range .Friends}}
+            <li id="{{.SteamId}}" class="friend">
+                <img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
+                <div class="info">
+                    <div>{{.Name}}</div><div>{{.State}}</div>
+                </div>
+            </li>
+            {{end}}
+        </ol>
+        <div class="chat">
+            <ol class="messages" data-name="home" role="log" aria-live="polite">
+                <li class="message"><time datetime="2014-03-27T16:41:13.000Z">10:41 AM</time><span class="sender"><span class="">Bob</span></span><span class="content">Hello World</span></li>
+                <li class="message"><time datetime="2014-03-27T16:41:13.000Z">10:41 AM</time><span class="sender"><span class="">Steve</span></span><span class="content">Welcome World</span></li>
             </ol>
-            </header>
-            <div id="history">
-            </div>
-            <footer id="footer" class="fixed-bar">
-                <form id="chat-form">
-                    <label for="message-box">Send a message</label>
-                    <textarea aria-controls="chat" id="message-box" name="message-box" placeholder="enter message ..."></textarea>
-                    <input type="submit" class="btn" value="Send" id="send">
-                </form>
-            </footer>
+            <form id="chat-form" class="fixed-bar">
+                <label for="message-box">Send a message</label>
+                <textarea aria-controls="chat" id="message-box" name="message-box" placeholder="enter message ..."></textarea>
+                <input type="submit" class="btn" value="Send" id="send">
+            </form>
         </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>
 <!-- <html>
 <head>
