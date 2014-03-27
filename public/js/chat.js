@@ -8,7 +8,7 @@ c.onopen = function(){
     var steamevent = JSON.parse(message.data)
     console.log(steamevent);
     var newMessage = $('<li>').text(JSON.stringify(steamevent));
-    $('#messages').append(newMessage);
+    $('#content-friends >.chat >.messages').append(newMessage);
   };
   $('form').submit(function(){
     var msg = $('#message').val();

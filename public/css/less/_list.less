@@ -3,21 +3,30 @@
     color: @zephyr-text;
     display: flex;
     flex-direction: column;
+    width: 250px;    
     flex: 0 0 auto;
     overflow-y: scroll;
     list-style: none;
     margin: 0;
-    padding: 0;    
+    padding: 0;
+    cursor: default;
     > .friend {
         display:flex;
         flex-direction: row;
-        padding: 10px;
+        line-height: 1.2em;
+        font-size: 0.8em;
+        white-space: nowrap;
+        padding: 6px;
         > img {
             display: block;
-            align-self: center;
             width: 32px;
             height: 32px;
         }
+        > .info {
+            padding-left:10px;
+        }
+        &:hover {
+            background-color: lighten(@zephyr-ui-background, 16%);
+        }
     }
 }
-

@@ -25,9 +25,9 @@
             Friends
             {{range .Friends}}
             <li id="{{.SteamId}}" class="friend">
-                <img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
-                <div class="info">
-                    <div>{{.Name}}</div><div>{{.State}}</div>
+                <img class="avatar {{.State}}" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
+                <div class="info {{.State}}">
+                    <div>{{.Name}}</div><div>{{.StateText}}</div>
                 </div>
             </li>
             {{end}}
@@ -47,50 +47,3 @@
 </div>
 </body>
 </html>
-<!-- <html>
-<head>
-    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
-    <script src='js/reconnecting-websocket.js'></script>
-    <script src='js/steam_language.js'></script>
-    <script src='js/chat.js'></script>
-    <script src="js/bootstrap.min.js"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-</head>
-<body>
-<div class="container-full">
-    <div class="navbar-default">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#friends" data-toggle="tab">Friends</a></li>
-            <li><a href="#Group1" data-toggle="tab">Group1<button class="close" type="button">×</button></a></li>
-            <li><a href="#Group2" data-toggle="tab">Group2<button class="close" type="button">×</button></a></li>
-            <li class="profile"><a href="http://steamcommunity.com/profiles/{{.User.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.User.AvatarRoot}}/{{.User.Avatar}}.jpg"/>{{.User.Name}}</a></li>
-        </ul>
-    </div>
-    <div class="tab-content">
-        <div class="tab-pane active" id="friends">
-            <div class="row">
-                <div class="col-md-4" id="friends">
-                    {{range .Friends}}
-                    <div id="{{.SteamId}}" >
-                        <a href="http://steamcommunity.com/profiles/{{.SteamId}}"><img src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />{{.Name}} </a>{{.State}}, {{.SteamId}}
-                    </div>
-                    {{end}}
-                </div>
-                <div class="col-md-8" id="chat">
-                    <ol id="messages"></ol>
-                    <form>
-                        <input type="text" id="steamid" placeholder="enter steamid ...">
-                        <input type="text" id="message" placeholder="enter message ..." spellcheck="true">
-                        <input type="submit" class="btn" value="Send" id="send">
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane" id="Group1">Test</div>
-        <div class="tab-pane" id="Group2">Test2</div>
-    </div>
-</div>
-</body>
-</html> -->

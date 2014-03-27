@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/martini-contrib/render"
 	. "github.com/gamingrobot/steamgo/internal"
+	"github.com/gamingrobot/steamgo/socialcache"
 )
 
 type indexData struct {
@@ -23,7 +24,8 @@ type Friend struct {
 	Name       string
 	AvatarRoot string
 	Avatar     string
-	State      EPersonaState
+	State      string
+	StateText  string
 }
 
 func (w *WebHandler) templateIndex(r render.Render) {
@@ -45,14 +47,40 @@ func (w *WebHandler) templateIndex(r render.Render) {
 			avatar = DefaultAvatar
 		}
 		fmt.Println(f.SteamId.ToUint64(), f.Name)
+		state, stateText := getState(f)
 		friend := Friend{
 			SteamId:    f.SteamId.ToUint64(),
 			Name:       f.Name,
 			AvatarRoot: avatar[0:2],
 			Avatar:     avatar,
-			State:      f.PersonaState,
+			State:      state,
+			StateText:  stateText,
 		}
 		index.Friends = append(index.Friends, friend)
 	}
 	r.HTML(200, "index", index)
+}
+
+func getState(f socialcache.Friend) (string, string) {
+	if f.GameId != 0 {
+		return "ingame", f.GameName
+	}
+	state := f.PersonaState
+	if state == EPersonaState_Away {
+		return "away", "Away"
+	} else if state == EPersonaState_Busy {
+		return "busy", "Busy"
+	} else if state == EPersonaState_Offline {
+		return "offline", "Offline"
+	} else if state == EPersonaState_LookingToPlay {
+		return "lookingtoplay", "Looking to Play"
+	} else if state == EPersonaState_LookingToTrade {
+		return "lookingtotrade", "Looking to Trade"
+	} else if state == EPersonaState_Online {
+		return "online", "Online"
+	} else if state == EPersonaState_Snooze {
+		return "snooze", "Snooze"
+	}
+	return "offline", "Offline"
+
 }
