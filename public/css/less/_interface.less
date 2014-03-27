@@ -1,0 +1,115 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: @zephyr-background;
+}
+
+.fixed-bar {
+    flex: 0 0 auto;
+    display: flex;
+    color: darken(white, 10);
+    background-color: @zephyr-ui-background;
+    padding: 6px;
+
+    form {
+        display: flex;
+        flex: 1 0 auto;
+
+        label {
+            display: none;
+        }
+    }
+
+    .btn,
+    input,
+    textarea {
+        display: block;
+        height: 16px;
+        padding: 6px;
+        font-size: 10pt;
+        outline: none;
+        transition: all 0.2s ease-in-out;
+        margin: 0px;
+        margin-right: 6px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    .btn {
+        flex: 0 0 auto;
+        box-sizing: content-box;
+        text-align: center;
+        background-color: @zephyr-buttons;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+            background-color: lighten(@zephyr-buttons, 10);
+        }
+    }
+
+    input,
+    textarea {
+        flex: 1 0 auto;
+        color: lighten(black, 1);
+        background-color: darken(white, 10);
+        border: none;
+
+        &:focus {
+            color: lighten(black, 20);
+            background-color: darken(white, 2);
+        }
+    }
+}
+
+#header {
+    padding-bottom: 0px;
+
+    h1 {
+        flex: 20 0 auto;
+        font-size: 17pt;
+    }
+}
+
+#history {
+    flex: 20 0 auto;
+    overflow-y: scroll;
+    height: 0%;
+}
+
+#footer {
+    textarea {
+        resize: none;
+        font-family: inherit;
+        overflow: hidden;
+    }
+}
+
+@media all and (max-width: 600px) {
+    div.container > #header {
+        h1 {
+            display: none;
+        }
+    }
+}
+
+@-moz-document url-prefix() {
+    .flex-container {
+        width: 100%;
+        -moz-box-sizing: border-box;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: @zephyr-ui-background;
+}

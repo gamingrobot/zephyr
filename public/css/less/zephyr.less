@@ -1,0 +1,34 @@
+﻿@zephyr-background: #171614;
+@zephyr-text: #D1CFCD;
+@zephyr-user-steam: #80B4DC;
+@zephyr-user-in-game: #A0CC67;
+@zephyr-user-web: #B67FFF;
+
+@zephyr-ui-background: darken( @zephyr-background, 8% );
+@zephyr-buttons: #693D99;
+
+.noSpacing() {
+	margin:  0;
+	padding: 0;
+}
+
+* {
+	border-radius: 0;
+	-webkit-appearance: none;
+}
+
+html,
+body {
+	height: 100%;
+	font-family: sans-serif;
+}
+
+body, h1 {
+	.noSpacing;
+}
+
+@import "_interface";
+@import "_tabs";
+@import "_history";
+@import "_userlist";
+@import "_names";
