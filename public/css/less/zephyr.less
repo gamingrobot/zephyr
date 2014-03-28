@@ -1,34 +1,191 @@
-﻿@zephyr-background: #171614;
+﻿@zephyr-background: #252525;
 @zephyr-text: #D1CFCD;
 @zephyr-user-online: #80B4DC;
 @zephyr-user-ingame: #A0CC67;
 @zephyr-user-offline: #898989;
 
-@zephyr-ui-background: darken( @zephyr-background, 8% );
+@zephyr-ui-background: darken( @zephyr-background, 2% );
 @zephyr-buttons: #693D99;
 
-.noSpacing() {
-	margin:  0;
-	padding: 0;
-}
+@avatar-offline-end: #4e4d4d;
+@avatar-online-end: #506d92;
+@avatar-ingame-end: #789e4c;
 
 * {
 	border-radius: 0;
 	-webkit-appearance: none;
 }
 
+.avatar(){
+    padding: 3px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+.avatar-online() {
+	.avatar();
+	background-color: @zephyr-user-online;
+    background: linear-gradient(to bottom, @zephyr-user-online 5%, @avatar-online-end 95%);
+}
+
+.avatar-ingame() {
+	.avatar();
+	background-color: @zephyr-user-ingame;
+    background: linear-gradient(to bottom, @zephyr-user-ingame 5%, @avatar-ingame-end 95%);
+}
+
+.avatar-offline() {
+	.avatar();
+	background-color: @zephyr-user-offline;
+	background: linear-gradient(to bottom, @zephyr-user-offline 5%, @avatar-offline-end 95%);
+}
+
 html,
 body {
 	height: 100%;
 	font-family: sans-serif;
+	color: @zephyr-text;
 }
 
 body, h1 {
-	.noSpacing;
+	margin:  0;
+	padding: 0;
 }
 
-@import "_interface";
-@import "_tabs";
-@import "_chat";
-@import "_list";
-@import "_names";
+#container{
+	display:flex;
+	height: 100%;
+}
+
+#left-bar {
+	width: 250px;
+	background-color: @zephyr-ui-background;
+	#user {
+		display: flex;
+		align-items: center;
+		margin: 8px;
+	}
+	#search {
+		width: 100%;
+		background-color: transparent;
+		width: 220px;
+		padding: 2px 4px 2px 6px;
+		margin-bottom: 16px;
+		margin-left: 8px;
+	}
+	#left-bar-list{
+		.header {
+			margin-left: 12px; 
+		}
+		.content {
+			list-style: none;
+			padding-left: 10px;
+			li {
+				display: flex;
+				margin: 6px;
+			}
+		}
+	}
+}
+
+#middle-bar {
+	flex: 1 0 0;
+	background-color: @zephyr-background;
+	display: flex;
+	flex-direction: column;
+	#chat-header {
+		flex: 0 0 auto;
+		background-color: @zephyr-ui-background;
+		display: flex;
+		align-items: center;
+		padding: 8px;
+	}
+	#messages {
+		flex: 1 0 auto;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	#chat-form {
+		flex: 0 0 auto;
+		display: flex;
+		textarea {
+			flex: 1 0 auto;
+		}
+		.btn {
+			flex: 0 0 auto;
+		}
+	}
+}
+
+#right-bar {
+	width:250px;
+	background-color: @zephyr-ui-background;
+	#right-bar-list{
+		.header {
+			margin-left: 2px; 
+		}
+		.content {
+			list-style: none;
+			padding-left: 10px;
+			li {
+				display: flex;
+				margin: 6px;
+			}
+		}
+	}
+}
+
+@media all and (max-width: 1080px) {
+	#right-bar {
+		width: 70px;
+		#right-bar-list{
+			.content {
+				padding: 0px;
+				li {
+					.avatar{
+						margin-right: 2px;
+					}
+					.info {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+.info.offline {
+    color: @zephyr-user-offline;
+}
+.info.online, .info.away, .info.busy, .info.lookingtoplay, .info.lookingtotrade, .info.snooze{
+    color: @zephyr-user-online;
+}
+.info.ingame {
+    color: @zephyr-user-ingame;
+}
+
+.avatar.offline {
+	.avatar-offline;	
+}
+.avatar.online, .avatar.away, .avatar.busy, .avatar.lookingtoplay, .avatar.lookingtotrade, .avatar.snooze {
+    .avatar-online;
+}
+.avatar.ingame {
+    .avatar-ingame;
+}
+
+.rank {
+	font-size: 16px;
+	margin-right: 2px;
+	padding-top: 9px;
+}
+.rank.admin {
+	color: gold;
+}
+.rank.mod {
+	color: silver;
+}
+.rank.none {
+	color: transparent;
+}
