@@ -5,11 +5,13 @@ import (
 	"github.com/codegangsta/martini-contrib/render"
 	. "github.com/gamingrobot/steamgo/internal"
 	"github.com/gamingrobot/steamgo/socialcache"
+	"strconv"
 )
 
 type indexData struct {
 	User    User
 	Friends []Friend
+	Groups  []Group
 }
 
 type User struct {
@@ -25,6 +27,14 @@ type Friend struct {
 	AvatarRoot string
 	Avatar     string
 	State      string
+	StateText  string
+}
+
+type Group struct {
+	SteamId    uint64
+	Name       string
+	AvatarRoot string
+	Avatar     string
 	StateText  string
 }
 
@@ -57,6 +67,21 @@ func (w *WebHandler) templateIndex(r render.Render) {
 			StateText:  stateText,
 		}
 		index.Friends = append(index.Friends, friend)
+	}
+	for _, g := range steam.Social.Groups.GetCopy() {
+		avatar := g.Avatar
+		if !ValidAvatar(avatar) {
+			avatar = DefaultAvatar
+		}
+		fmt.Println(g.SteamId.ToUint64(), g.Name)
+		group := Group{
+			SteamId:    g.SteamId.ToUint64(),
+			Name:       g.Name,
+			AvatarRoot: avatar[0:2],
+			Avatar:     avatar,
+			StateText:  strconv.FormatUint(uint64(g.MemberChattingCount), 10),
+		}
+		index.Groups = append(index.Groups, group)
 	}
 	r.HTML(200, "index", index)
 }

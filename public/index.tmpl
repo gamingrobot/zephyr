@@ -37,18 +37,14 @@
             </ul>
             <div class="header">Groups</div>
             <ul class="content">
-                <li>
-                    <img class="avatar offline" src="http://media.steampowered.com/steamcommunity/public/images/avatars/ff/ff360f0356caf0272118df54447a4555834182f8.jpg"/>
+                {{range .Groups}}
+                <li id="{{.SteamId}}">
+                    <img class="avatar offline" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
                     <div class="info offline">
-                        <div>Some Group Name</div><div>11 In Chat</div>
+                        <div>{{.Name}}</div><div>{{.StateText}} In Chat</div>
                     </div>
                 </li>
-                <li>
-                    <img class="avatar offline" src="http://media.steampowered.com/steamcommunity/public/images/avatars/ff/ff360f0356caf0272118df54447a4555834182f8.jpg"/>
-                    <div class="info offline">
-                        <div>Some Other Group Name</div><div>2 In Chat</div>
-                    </div>
-                </li>
+                {{end}}
             </ul>
         </div>
     </div>
