@@ -51,8 +51,8 @@ function left_bar_click(element) {
             //add the chat to sidebar
             var $newside = $("#chats-default").clone();
             $newside.attr("id", "chats-" + id)
-            $newside.show();
-            $newside.append(element.clone());
+            $newside.removeAttr("style") //show but without the display:block
+            $newside.append(element.clone().children());
             $newside.click(function() {
                 left_bar_click($newside)
             });
@@ -62,6 +62,8 @@ function left_bar_click(element) {
             //show the new chat
             var $newchat = $("#chat-default").clone();
             $newchat.attr("id", "chat-" + id)
+            $el = element.clone().unwrap()
+            $newchat.find(".chat-header").empty().append($el.children());
             $newchat.removeAttr("style") //show but without the display:block
             //hide all other chats
             $(".chat-bar").each(function() {
