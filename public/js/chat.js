@@ -62,7 +62,7 @@ function left_bar_click(element) {
             //show the new chat
             var $newchat = $("#chat-default").clone();
             $newchat.attr("id", "chat-" + id)
-            $el = element.clone().unwrap()
+            $el = element.clone();
             $newchat.find(".chat-header").empty().append($el.children());
             flexShow($newchat);
             hideChats();
