@@ -33,7 +33,7 @@ body, h1 {
 	height: 100%;
 }
 
-#left-bar {
+.left-bar {
 	width: 250px;
 	background-color: @zephyr-ui-background;
 	#user {
@@ -49,7 +49,7 @@ body, h1 {
 		margin-bottom: 16px;
 		margin-left: 8px;
 	}
-	#left-bar-list{
+	.left-bar-list{
 		.header {
 			margin-left: 12px; 
 		}
@@ -57,32 +57,42 @@ body, h1 {
 			list-style: none;
 			padding-left: 10px;
 			li {
+				cursor: pointer;;
 				display: flex;
 				margin: 6px;
+				&:hover {
+					background-color: lighten( @zephyr-background, 8% );
+				}
 			}
+
 		}
 	}
 }
 
-#middle-bar {
+.chat-bar {
+	flex: 1 0 0;
+	display:flex;
+}
+
+.middle-bar {
 	flex: 1 0 0;
 	background-color: @zephyr-background;
 	display: flex;
 	flex-direction: column;
-	#chat-header {
+	.chat-header {
 		flex: 0 0 auto;
 		background-color: @zephyr-ui-background;
 		display: flex;
 		align-items: center;
 		padding: 8px;
 	}
-	#messages {
+	.messages {
 		flex: 1 0 auto;
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
-	#chat-form {
+	.chat-form {
 		flex: 0 0 auto;
 		display: flex;
 		textarea {
@@ -94,10 +104,10 @@ body, h1 {
 	}
 }
 
-#right-bar {
+.right-bar {
 	width:250px;
 	background-color: @zephyr-ui-background;
-	#right-bar-list{
+	.right-bar-list{
 		.header {
 			margin-left: 2px; 
 		}
@@ -113,9 +123,9 @@ body, h1 {
 }
 
 @media all and (max-width: 1080px) {
-	#right-bar {
+	.right-bar {
 		width: 70px;
-		#right-bar-list{
+		.right-bar-list{
 			.content {
 				padding: 0px;
 				li {

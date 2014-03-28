@@ -12,22 +12,22 @@
 </head>
 <body>
 <div id="container">
-    <div id="left-bar">
+    <div class="left-bar">
         <div id="user">
             <img class="avatar online" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.User.AvatarRoot}}/{{.User.Avatar}}.jpg"/>
             <div class="info online">{{.User.Name}}</div>
         </div>
         <input type="text" placeholder="search" id="search">
-        <div id="left-bar-list">
+        <div class="left-bar-list">
             <div class="header">Chats</div>
-            <ul class="content">
+            <ul id="chats" class="content">
                 <li>Billy Bob</li>
                 <li>Jilly Bob</li>
             </ul>
             <div class="header">Friends</div>
-            <ul class="content">
+            <ul id="friends" class="content">
                 {{range .Friends}}
-                <li id="{{.SteamId}}">
+                <li id="friends-{{.SteamId}}">
                     <img class="avatar {{.State}}" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
                     <div class="info {{.State}}">
                         <div>{{.Name}}</div><div>{{.StateText}}</div>
@@ -36,9 +36,9 @@
                 {{end}}
             </ul>
             <div class="header">Groups</div>
-            <ul class="content">
+            <ul id="groups" class="content">
                 {{range .Groups}}
-                <li id="{{.SteamId}}">
+                <li id="groups-{{.SteamId}}">
                     <img class="avatar offline" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
                     <div class="info">
                         <div>{{.Name}}</div><div>{{.StateText}} In Chat</div>
@@ -48,34 +48,33 @@
             </ul>
         </div>
     </div>
-    <div id="middle-bar">
-        <div id="chat-header">
-            <img class="avatar offline" src="http://media.steampowered.com/steamcommunity/public/images/avatars/ff/ff360f0356caf0272118df54447a4555834182f8.jpg"/>
-            <div class="info">Some Group Name</div>
-        </div>
-        <ul id="messages">
-            <li>Hello world</li>
-            <li>Hello world</li>
-        </ul>
-        <form id="chat-form">
-            <textarea aria-controls="chat" id="message-box" name="message-box" placeholder="enter message ..."></textarea>
-            <input type="submit" class="btn" value="Send" id="send">
-        </form>
-    </div>
-    <div id="right-bar">
-        <div id="right-bar-list">
-            <div class="header">Members</div>
-            <ul class="content">
-                {{range .Friends}}
-                <li id="{{.SteamId}}">
-                    <div class="rank admin">★</div>
-                    <img class="avatar {{.State}}" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/{{.AvatarRoot}}/{{.Avatar}}.jpg" />
-                    <div class="info {{.State}}">
-                        <div>{{.Name}}</div><div>{{.StateText}}</div>
-                    </div>
-                </li>
-                {{end}}
+    <div id="chat-default" class="chat-bar">
+        <div class="middle-bar">
+            <div class="chat-header">
+                <img class="avatar offline" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg"/>
+                <div class="info">Group Name</div>
+            </div>
+            <ul class="messages">
+                <li>Hello world</li>
             </ul>
+            <form class="chat-form">
+                <textarea aria-controls="chat" class="message-box" name="message-box" placeholder="enter message ..."></textarea>
+                <input type="submit" class="btn" value="Send" class="send">
+            </form>
+        </div>
+        <div class="right-bar">
+            <div class="right-bar-list">
+                <div class="header">Members</div>
+                <ul class="content">
+                    <li>
+                        <div class="rank admin">★</div>
+                        <img class="avatar online" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg" />
+                        <div class="info online">
+                            <div>Billy Bob</div><div>Online</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
