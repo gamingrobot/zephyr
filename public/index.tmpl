@@ -18,11 +18,10 @@
             <div class="info online">{{.User.Name}}</div>
         </div>
         <input type="text" placeholder="search" id="search">
-        <div class="left-bar-list">
+        <div id="left-bar-list" class="left-bar-list">
             <div class="header">Chats</div>
             <ul id="chats" class="content">
-                <li>Billy Bob</li>
-                <li>Jilly Bob</li>
+                <li id="chats-default" style="display:none"></li>
             </ul>
             <div class="header">Friends</div>
             <ul id="friends" class="content">
