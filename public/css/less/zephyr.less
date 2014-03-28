@@ -16,30 +16,6 @@
 	-webkit-appearance: none;
 }
 
-.avatar(){
-    padding: 3px;
-    border-radius: 3px;
-    margin-right: 8px;
-}
-
-.avatar-online() {
-	.avatar();
-	background-color: @zephyr-user-online;
-    background: linear-gradient(to bottom, @zephyr-user-online 5%, @avatar-online-end 95%);
-}
-
-.avatar-ingame() {
-	.avatar();
-	background-color: @zephyr-user-ingame;
-    background: linear-gradient(to bottom, @zephyr-user-ingame 5%, @avatar-ingame-end 95%);
-}
-
-.avatar-offline() {
-	.avatar();
-	background-color: @zephyr-user-offline;
-	background: linear-gradient(to bottom, @zephyr-user-offline 5%, @avatar-offline-end 95%);
-}
-
 html,
 body {
 	height: 100%;
@@ -156,23 +132,31 @@ body, h1 {
 }
 
 .info.offline {
-    color: @zephyr-user-offline;
+	color: @zephyr-user-offline;
 }
 .info.online, .info.away, .info.busy, .info.lookingtoplay, .info.lookingtotrade, .info.snooze{
-    color: @zephyr-user-online;
+	color: @zephyr-user-online;
 }
 .info.ingame {
-    color: @zephyr-user-ingame;
+	color: @zephyr-user-ingame;
 }
 
+.avatar {
+	padding: 3px;
+	border-radius: 3px;
+	margin-right: 8px;
+}
 .avatar.offline {
-	.avatar-offline;	
+	background-color: @zephyr-user-offline;
+	background: linear-gradient(to bottom, @zephyr-user-offline 5%, @avatar-offline-end 95%);	
 }
 .avatar.online, .avatar.away, .avatar.busy, .avatar.lookingtoplay, .avatar.lookingtotrade, .avatar.snooze {
-    .avatar-online;
+	background-color: @zephyr-user-online;
+	background: linear-gradient(to bottom, @zephyr-user-online 5%, @avatar-online-end 95%);
 }
 .avatar.ingame {
-    .avatar-ingame;
+	background-color: @zephyr-user-ingame;
+	background: linear-gradient(to bottom, @zephyr-user-ingame 5%, @avatar-ingame-end 95%);
 }
 
 .rank {
