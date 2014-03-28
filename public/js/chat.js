@@ -51,7 +51,7 @@ function left_bar_click(element) {
             //add the chat to sidebar
             var $newside = $("#chats-default").clone();
             $newside.attr("id", "chats-" + id)
-            $newside.removeAttr("style") //show but without the display:block
+            flexShow($newside);
             $newside.append(element.clone().children());
             $newside.click(function() {
                 left_bar_click($newside)
@@ -64,26 +64,33 @@ function left_bar_click(element) {
             $newchat.attr("id", "chat-" + id)
             $el = element.clone().unwrap()
             $newchat.find(".chat-header").empty().append($el.children());
-            $newchat.removeAttr("style") //show but without the display:block
-            //hide all other chats
-            $(".chat-bar").each(function() {
-                $(this).hide();
-            });
+            flexShow($newchat);
+            hideChats();
             //add our chat
             $newchat.appendTo("#container");
         }
 
     } else if (type === "chats") {
         var $chat = $("#chat-" + id);
-        //hide all other chats
-        $(".chat-bar").each(function() {
-            $(this).hide();
-        });
-        $chat.removeAttr("style") //show but without the display:block
+        hideChats();
+        flexShow($chat);
+
     }
     //hide the chat sidebar
     if (type === "friends") {
         var $chat = $("#chat-" + id + " .right-bar");
         $chat.hide();
     }
+}
+
+function hideChats() {
+    //hide all other chats
+    $(".chat-bar").each(function() {
+        $(this).hide();
+    });
+}
+
+function flexShow(element) {
+    //show but without the display:block
+    element.removeAttr("style")
 }

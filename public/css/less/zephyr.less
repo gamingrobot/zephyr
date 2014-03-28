@@ -11,6 +11,8 @@
 @avatar-online-end: #506d92;
 @avatar-ingame-end: #789e4c;
 
+@import "_flexbox";
+
 * {
 	border-radius: 0;
 	-webkit-appearance: none;
@@ -29,7 +31,7 @@ body, h1 {
 }
 
 #container{
-	display:flex;
+	.flex-display;
 	height: 100%;
 }
 
@@ -37,8 +39,8 @@ body, h1 {
 	width: 250px;
 	background-color: @zephyr-ui-background;
 	#user {
-		display: flex;
-		align-items: center;
+		.flex-display;
+		.align-items(center);
 		margin: 8px;
 	}
 	#search {
@@ -58,7 +60,7 @@ body, h1 {
 			padding-left: 10px;
 			li {
 				cursor: pointer;;
-				display: flex;
+				.flex-display;
 				margin: 6px;
 				&:hover {
 					background-color: lighten( @zephyr-background, 8% );
@@ -70,36 +72,36 @@ body, h1 {
 }
 
 .chat-bar {
-	flex: 1 0 0;
-	display:flex;
+	.flex(1 0 0);
+	.flex-display;
 }
 
 .middle-bar {
-	flex: 1 0 0;
+	.flex(1 0 0);
 	background-color: @zephyr-background;
-	display: flex;
+	.flex-display;
 	flex-direction: column;
 	.chat-header {
-		flex: 0 0 auto;
+		.flex(0 0 auto);
 		background-color: @zephyr-ui-background;
-		display: flex;
-		align-items: center;
+		.flex-display;
+		.align-items(center);
 		padding: 8px;
 	}
 	.messages {
-		flex: 1 0 auto;
+		.flex(1 0 auto);
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 	.chat-form {
-		flex: 0 0 auto;
-		display: flex;
+		.flex(0 0 auto);
+		.flex-display;
 		textarea {
-			flex: 1 0 auto;
+			.flex(1 0 auto);
 		}
 		.btn {
-			flex: 0 0 auto;
+			.flex(0 0 auto);
 		}
 	}
 }
@@ -115,7 +117,7 @@ body, h1 {
 			list-style: none;
 			padding-left: 10px;
 			li {
-				display: flex;
+				.flex-display;
 				margin: 6px;
 			}
 		}
@@ -186,3 +188,4 @@ body, h1 {
 .rank.none {
 	color: transparent;
 }
+
