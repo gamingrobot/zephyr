@@ -38,6 +38,9 @@ body, h1 {
 .left-bar {
 	width: 250px;
 	background-color: @zephyr-ui-background;
+	overflow: hidden;
+	.flex-display;
+	.flex-direction(column);
 	#user {
 		.flex-display;
 		.align-items(center);
@@ -45,13 +48,15 @@ body, h1 {
 	}
 	#search {
 		width: 100%;
-		background-color: transparent;
 		width: 220px;
 		padding: 2px 4px 2px 6px;
+		margin-top: 8px;
 		margin-bottom: 16px;
 		margin-left: 8px;
 	}
 	.left-bar-list{
+		.flex(1 0 0);
+		overflow-y: auto;
 		.header {
 			margin-left: 12px; 
 		}
@@ -97,6 +102,15 @@ body, h1 {
 	.chat-form {
 		.flex(0 0 auto);
 		.flex-display;
+		padding: 6px;
+		.btn, textarea {
+			padding: 6px;
+			margin: 0px;
+			margin-right: 6px;
+			&:last-child {
+				margin-right: 0;
+			}
+		}
 		textarea {
 			.flex(1 0 auto);
 		}
@@ -145,6 +159,11 @@ body, h1 {
 
 .info {
 	color: @zephyr-text;
+	div {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 .info.offline {
 	color: @zephyr-user-offline;
@@ -157,6 +176,7 @@ body, h1 {
 }
 
 .avatar {
+	.flex(0 0 auto);
 	padding: 3px;
 	border-radius: 3px;
 	margin-right: 8px;
@@ -189,3 +209,50 @@ body, h1 {
 	color: transparent;
 }
 
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: @zephyr-buttons;
+}
+
+.btn, input, textarea {
+	display: block;
+	height: 16px;
+	font-size: 10pt;
+	outline: none;
+	transition: all 0.2s ease-in-out;
+	margin: 0px;
+	color: lighten(black, 1);
+    background-color: darken(white, 10);
+    border: none;
+    &:focus {
+        color: lighten(black, 20);
+        background-color: darken(white, 2);
+    }
+}
+input, textarea {
+	resize: none;
+	font-family: inherit;
+	overflow: hidden;
+	color: lighten(black, 1);
+	background-color: darken(white, 10);
+	border: none;
+	&:focus {
+		color: lighten(black, 20);
+		background-color: darken(white, 2);
+	}
+}
+.btn {
+	box-sizing: content-box;
+	text-align: center;
+	background-color: @zephyr-buttons;
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: pointer;
+	&:hover {
+		background-color: lighten(@zephyr-buttons, 10);
+	}
+}
