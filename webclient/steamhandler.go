@@ -3,6 +3,7 @@ package webclient
 import (
 	"github.com/gamingrobot/steamgo"
 	. "github.com/gamingrobot/steamgo/internal"
+	"github.com/gamingrobot/steamgo/steamid"
 	. "github.com/gamingrobot/zephyr/events"
 	"log"
 )
@@ -31,7 +32,7 @@ func (s *SteamHandler) steamLoop(login steamgo.LogOnDetails) {
 		case steamgo.LoggedOnEvent:
 			log.Println("Logged on steam as", login.Username)
 			s.steam.Social.SetPersonaState(EPersonaState_Online)
-			s.steam.Social.RequestFriendInfo(s.steam.SteamId(), EClientPersonaStateFlag_DefaultInfoRequest)
+			s.steam.Social.JoinChat(steamid.SteamId(103582791435235823))
 		case steamgo.LoggedOffEvent:
 			log.Println("Logged off steam")
 			s.steam.Auth.LogOn(login)

@@ -65,13 +65,17 @@
             <div class="right-bar-list">
                 <div class="header">Members</div>
                 <ul class="content">
-                    <li>
-                        <div class="rank admin">★</div>
-                        <img class="avatar online" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg" />
-                        <div class="info online">
-                            <div>Billy Bob</div><div>Online</div>
-                        </div>
-                    </li>
+                    {{range .Chats}}
+                        {{range .ChatMembers}}
+                        <li id="members-{{.SteamId}}">
+                            <div class="rank {{.Rank}}">★</div>
+                            <img class="avatar online" src="https://zephyr.gamingrobot.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg" />
+                            <div class="info online">
+                                <div>BillyBob</div><div>Online</div>
+                            </div>
+                        </li>
+                        {{end}}
+                    {{end}}
                 </ul>
             </div>
         </div>

@@ -12,6 +12,7 @@ type indexData struct {
 	User    User
 	Friends []Friend
 	Groups  []Group
+	Chats   []Chat
 }
 
 type User struct {
@@ -36,6 +37,17 @@ type Group struct {
 	AvatarRoot string
 	Avatar     string
 	StateText  string
+}
+
+type Chat struct {
+	SteamId     uint64
+	GroupId     uint64
+	ChatMembers []ChatMember
+}
+
+type ChatMember struct {
+	SteamId uint64
+	Rank    string
 }
 
 func (w *WebHandler) templateIndex(r render.Render) {
@@ -83,7 +95,43 @@ func (w *WebHandler) templateIndex(r render.Render) {
 		}
 		index.Groups = append(index.Groups, group)
 	}
+	for _, c := range steam.Social.Chats.GetCopy() {
+		chat := Chat{
+			SteamId: c.SteamId.ToUint64(),
+			GroupId: c.GroupId.ToUint64(),
+		}
+		for _, cm := range c.ChatMembers {
+			chatmember := ChatMember{
+				SteamId: cm.SteamId.ToUint64(),
+				Rank:    getRank(cm),
+			}
+			chat.ChatMembers = append(chat.ChatMembers, chatmember)
+		}
+		index.Chats = append(index.Chats, chat)
+	}
 	r.HTML(200, "index", index)
+}
+
+func getRank(c socialcache.ChatMember) string {
+	perm := c.ClanPermissions
+	switch perm {
+	case EClanPermission_Nobody:
+		return "none"
+	case EClanPermission_Owner:
+		return "admin"
+	case EClanPermission_Officer:
+		return "admin"
+	case EClanPermission_OwnerAndOfficer:
+		return "admin"
+	case EClanPermission_Member:
+		return "member"
+	case EClanPermission_Moderator:
+		return "mod"
+	case EClanPermission_OwnerOfficerModerator:
+		return "admin"
+	default:
+		return "none"
+	}
 }
 
 func getState(f socialcache.Friend) (string, string) {
@@ -91,21 +139,22 @@ func getState(f socialcache.Friend) (string, string) {
 		return "ingame", f.GameName
 	}
 	state := f.PersonaState
-	if state == EPersonaState_Away {
+	switch state {
+	case EPersonaState_Away:
 		return "away", "Away"
-	} else if state == EPersonaState_Busy {
+	case EPersonaState_Busy:
 		return "busy", "Busy"
-	} else if state == EPersonaState_Offline {
+	case EPersonaState_Offline:
 		return "offline", "Offline"
-	} else if state == EPersonaState_LookingToPlay {
+	case EPersonaState_LookingToPlay:
 		return "lookingtoplay", "Looking to Play"
-	} else if state == EPersonaState_LookingToTrade {
+	case EPersonaState_LookingToTrade:
 		return "lookingtotrade", "Looking to Trade"
-	} else if state == EPersonaState_Online {
+	case EPersonaState_Online:
 		return "online", "Online"
-	} else if state == EPersonaState_Snooze {
+	case EPersonaState_Snooze:
 		return "snooze", "Snooze"
+	default:
+		return "offline", "Offline"
 	}
-	return "offline", "Offline"
-
 }
