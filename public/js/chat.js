@@ -2,9 +2,9 @@ var server = "wss://zephyr.gamingrobot.net/ws"
 if (window.location.search === '?debug') {
     server = 'ws://localhost:3000/ws';
 }
-var c = new ReconnectingWebSocket(server);
-c.onopen = function() {
-    c.onmessage = function(message) {
+var websocket = new ReconnectingWebSocket(server);
+websocket.onopen = function() {
+    websocket.onmessage = function(message) {
         var steamevent = JSON.parse(message.data)
         console.log(steamevent);
         var newMessage = $('<li>').text(JSON.stringify(steamevent));
@@ -23,7 +23,7 @@ c.onopen = function() {
             }
             console.log(chatmsg)
             console.log(JSON.stringify(chatmsg))
-            c.send(JSON.stringify(chatmsg));
+            websocket.send(JSON.stringify(chatmsg));
             $('#message').val('');
             return false;
         }
@@ -47,6 +47,7 @@ function left_bar_click(element) {
     var id = chatid[1];
     console.log(type, id);
     if (type === "friends" || type === "groups") {
+        //left sidebar chats
         if (!$("#chats-" + id).length) { //check that the element doesnt already exist
             //add the chat to sidebar
             var $newside = $("#chats-default").clone();
@@ -58,6 +59,7 @@ function left_bar_click(element) {
             });
             $newside.appendTo("#chats");
         }
+        //middle bar chats
         if (!$("#chat-" + id).length) { //check that the element doesnt already exist
             //show the new chat
             var $newchat = $("#chat-default").clone();
@@ -68,13 +70,13 @@ function left_bar_click(element) {
             hideChats();
             //add our chat
             $newchat.appendTo("#container");
+            joinChat(id);
         }
 
     } else if (type === "chats") {
         var $chat = $("#chat-" + id);
         hideChats();
         flexShow($chat);
-
     }
     //hide the chat sidebar
     if (type === "friends") {
@@ -93,4 +95,19 @@ function hideChats() {
 function flexShow(element) {
     //show but without the display:block
     element.removeAttr("style")
+}
+
+function joinChat(id) {
+    var body = {
+        "SteamId": id,
+    }
+    sendEvent("JoinChatEvent", body)
+}
+
+function sendEvent(eve, body) {
+    var msg = {
+        "Event": eve,
+        "Body": body
+    }
+    websocket.send(JSON.stringify(msg));
 }

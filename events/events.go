@@ -23,3 +23,7 @@ type SendMessageEvent struct {
 	ChatEntryType EChatEntryType
 	Message       string
 }
+
+type JoinChatEvent struct {
+	SteamId SteamId `json:",string"`
+}

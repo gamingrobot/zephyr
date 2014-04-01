@@ -115,6 +115,8 @@ func (w *WebHandler) handleWebEvent(event *WebEvent) {
 	switch event.Event {
 	case "SendMessageEvent":
 		w.handleSendMessage(event)
+	case "JoinChatEvent":
+		w.handleJoinChat(event)
 	}
 }
 
@@ -123,4 +125,10 @@ func (w *WebHandler) handleSendMessage(event *WebEvent) {
 	event.ReadEvent(body)
 	w.client.steamClient.Social.SendMessage(body.SteamId, body.ChatEntryType, body.Message)
 	fmt.Printf("%+v\n", body)
+}
+
+func (w *WebHandler) handleJoinChat(event *WebEvent) {
+	body := new(JoinChatEvent)
+	event.ReadEvent(body)
+	w.client.steamClient.Social.JoinChat(body.SteamId)
 }
