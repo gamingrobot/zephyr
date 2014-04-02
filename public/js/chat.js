@@ -2,6 +2,8 @@ var server = "wss://zephyr.gamingrobot.net/ws"
 if (window.location.search === '?debug') {
     server = 'ws://localhost:3000/ws';
 }
+var current_chat = "";
+
 var websocket = new ReconnectingWebSocket(server);
 websocket.onopen = function() {
     websocket.onmessage = function(message) {
@@ -10,25 +12,6 @@ websocket.onopen = function() {
         var newMessage = $('<li>').text(JSON.stringify(steamevent));
         $('#content-friends >.chat >.messages').append(newMessage);
     };
-    $('form').submit(function() {
-        var msg = $('#message').val();
-        if (msg.length > 0) {
-            var chatmsg = {
-                "Event": "SendMessageEvent",
-                "Body": {
-                    "SteamId": $('#steamid').val(),
-                    "ChatEntryType": EChatEntryType.ChatMsg,
-                    "Message": msg
-                }
-            }
-            console.log(chatmsg)
-            console.log(JSON.stringify(chatmsg))
-            websocket.send(JSON.stringify(chatmsg));
-            $('#message').val('');
-            return false;
-        }
-        return false;
-    });
 }
 
 
@@ -39,6 +22,20 @@ $(document).ready(function() {
         });
     });
 });
+
+function chat_message_submit(element, id) {
+    var msgbox = element.find(".message-box")
+    var msg = msgbox.val();
+    if (msg.length > 0) {
+        var body = {
+            "SteamId": id,
+            "ChatEntryType": EChatEntryType.ChatMsg,
+            "Message": msg
+        }
+        sendEvent("SendMessageEvent", body)
+        msgbox.val('');
+    }
+}
 
 function left_bar_click(element) {
     var chatid = element.attr("id");
@@ -66,6 +63,11 @@ function left_bar_click(element) {
             $newchat.attr("id", "chat-" + id)
             $el = element.clone();
             $newchat.find(".chat-header").empty().append($el.children());
+            var $chat_form = $newchat.find(".chat-form")
+            $chat_form.submit(function() {
+                chat_message_submit($chat_form, id)
+                return false
+            });
             flexShow($newchat);
             hideChats();
             //add our chat
@@ -76,6 +78,7 @@ function left_bar_click(element) {
     } else if (type === "chats") {
         var $chat = $("#chat-" + id);
         hideChats();
+        current_chat = id;
         flexShow($chat);
     }
     //hide the chat sidebar
@@ -98,6 +101,7 @@ function flexShow(element) {
 }
 
 function joinChat(id) {
+    current_chat = id;
     var body = {
         "SteamId": id,
     }
